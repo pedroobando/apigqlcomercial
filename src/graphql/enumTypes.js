@@ -1,0 +1,19 @@
+const EnumUserRoll = {
+  ADMIN: 'ADMIN',
+  CAJERO: 'CAJERO',
+};
+
+const EnumExpenseStatus = {
+  DRAFT: 'DRAFT',
+  FINISHED: 'FINISHED',
+  SHIPPEDANDLOADED: 'SHIPPEDANDLOADED',
+};
+
+const EnumExpenseType = {
+  BYALIQUOT: 'BYALIQUOT',
+  BYINDIVIDUAL: 'BYINDIVIDUAL',
+  BYEQUALDISTRIBUTION: 'BYEQUALDISTRIBUTION',
+  BYGROUPDISTRIBUTION: 'BYGROUPDISTRIBUTION',
+};
+
+module.exports = { EnumUserRoll, EnumExpenseStatus, EnumExpenseType };

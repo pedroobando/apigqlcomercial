@@ -1,0 +1,42 @@
+{
+  "name": "apigqlcommerce",
+  "version": "1.0.0",
+  "description": "Api GraphQL para manejo comercial en irapa usando mongodb",
+  "main": "build/server.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "node_modules/.bin/nodemon src/index.js",
+    "build": "node_modules/.bin/esbuild src/index.js --bundle --platform=node --minify --outfile=build/server.js",
+    "publish:vercel": "yarn build && vercel --env DB_MONGO=mongodb+srv://mern_user:gIOIeByQVUM2fCR0@cluster0.mmtd4.mongodb.net/condominio?authSource=admin&replicaSet=atlas-mgk2ew-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true --env SECRET_JWT=6240cbbdde891f419c4a0ca2f21416a4c5cdb7cfdd385bf62d56edff07b3dfa7 --env TOKEN_EXPIRES_IN=6h --env TOKEN_ALGORITHM=HS256 --prod"
+  },
+  "keywords": [
+    "GraphQL",
+    "Mongodb",
+    "Mongoose",
+    "Apollo-Server",
+    "Comerce",
+    "JsonWebToken",
+    "Express"
+  ],
+  "author": "Pedro Obando <pedroobando@hotmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-express": "^3.4.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "graphql": "^15.6.0",
+    "graphql-upload": "^13.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.8",
+    "mongoose-paginate-v2": "^1.4.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.17",
+    "eslint": "^7.32.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.3.2"
+  }
+}
