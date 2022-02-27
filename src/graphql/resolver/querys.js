@@ -1,6 +1,6 @@
 const queryUser = require('./querys/user');
 const queryProduct = require('./querys/product');
-// const queryCoinType = require('./querys/cointype');
+const queryDocument = require('./querys/document');
 // const queryOwner = require('./querys/owner');
 // const queryProperty = require('./querys/property');
 // const queryConcepts = require('./querys/conceptexpense');
@@ -11,7 +11,7 @@ const querys = {
   Query: {
     ...queryUser,
     ...queryProduct,
-    // ...queryProperty,
+    ...queryDocument,
     // ...queryOwner,
     // ...queryCoinType,
     // ...queryConcepts,
