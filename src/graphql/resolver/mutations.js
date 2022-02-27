@@ -1,5 +1,5 @@
 const mutationUser = require('./mutations/user');
-// const mutationCondomi = require('./mutations/condominio');
+const mutationProduct = require('./mutations/product');
 // const mutationCoinType = require('./mutations/cointype');
 // const mutationProperty = require('./mutations/property');
 // const mutationOwner = require('./mutations/owner');
@@ -10,7 +10,7 @@ const mutationUser = require('./mutations/user');
 const mutations = {
   Mutation: {
     ...mutationUser,
-    // ...mutationCondomi,
+    ...mutationProduct,
     // ...mutationCoinType,
     // ...mutationProperty,
     // ...mutationOwner,

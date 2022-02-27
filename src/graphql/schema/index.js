@@ -1,7 +1,7 @@
 const { gql } = require('apollo-server-express');
 // const ownerSchema = require('./owner');
 const userSchema = require('./user');
-// const condominioSchema = require('./condominio');
+const productSchema = require('./product');
 // const propertySchema = require('./property');
 // const propertyTypeSchema = require('./properttype');
 // const coinTypeSchema = require('./cointype');
@@ -53,9 +53,9 @@ const typeDefs = gql`
   }
 
   ${userSchema}
+  ${productSchema}
 `;
 
-// ${ownerSchema}
 // ${condominioSchema}
 // ${propertySchema}
 // ${propertyTypeSchema}
