@@ -8,9 +8,9 @@ const { DocumentDet } = require('../../mongodb/models/document');
 
 const types = {
   Document: {
-    details: async (parent) =>  await DocumentDet.find({ documentId: parent.id })
-    },
+    details: async (parent) => await DocumentDet.find({ documentId: parent.id }),
   },
+
   // Condominio: {
   //   coinType: async (parent) => await CoinType.findById(parent.coinTypeId),
   //   propertys: async (parent) => await Property.find({ condominioId: parent._id }),
