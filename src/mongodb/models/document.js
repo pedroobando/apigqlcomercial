@@ -2,6 +2,11 @@ const { Schema, model } = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const DocDetailSchema = new Schema({
+  documentId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Document',
+  },
   productId: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -27,7 +32,9 @@ const DocDetailSchema = new Schema({
   },
 });
 
-DocDetailSchema.index({ productId: 1, updated_at: 1 }, { unique: false });
+DocDetailSchema.index({ documentId: 1 }, { unique: false });
+DocDetailSchema.index({ productId: 1 }, { unique: false });
+const DocumentDet = model('DocumentDetail', DocDetailSchema);
 
 const DocumentSchema = new Schema({
   docDate: {
@@ -54,7 +61,10 @@ const DocumentSchema = new Schema({
     type: Schema.Types.Boolean,
     default: false,
   },
-  details: [DocDetailSchema],
+  // details: [DocDetailSchema],
+  // details: {
+  //   type: Schema.Types.Subdocument,
+  // },
   created_at: {
     type: Date,
     default: Date.now(),
@@ -71,4 +81,4 @@ DocumentSchema.index({ docType: 1, docDate: 1, finished: 1 }, { unique: false })
 DocumentSchema.index({ docType: 1, docNumber: 1 }, { unique: false });
 const Document = model('Document', DocumentSchema);
 
-module.exports = { Document };
+module.exports = { Document, DocumentDet };

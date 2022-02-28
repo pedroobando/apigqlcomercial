@@ -1,5 +1,5 @@
 const User = require('../../mongodb/models/user');
-// const Condominio = require('../../mongodb/models/condominio');
+const { DocumentDet } = require('../../mongodb/models/document');
 // const { PropertyType, Property } = require('../../mongodb/models/property');
 // const Owner = require('../../mongodb/models/owner');
 // const CoinType = require('../../mongodb/models/cointype');
@@ -7,6 +7,10 @@ const User = require('../../mongodb/models/user');
 // const { ExpenseDetail } = require('../../mongodb/models/expense');
 
 const types = {
+  Document: {
+    details: async (parent) =>  await DocumentDet.find({ documentId: parent.id })
+    },
+  },
   // Condominio: {
   //   coinType: async (parent) => await CoinType.findById(parent.coinTypeId),
   //   propertys: async (parent) => await Property.find({ condominioId: parent._id }),

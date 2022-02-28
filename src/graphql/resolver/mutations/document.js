@@ -1,6 +1,5 @@
 const { ApolloError } = require('apollo-server-express');
-const { Document } = require('../../../mongodb/models/document');
-const { Product } = require('../../../mongodb/models/product');
+const { Document, DocumentDet } = require('../../../mongodb/models/document');
 
 const { isUserAuthenticate } = require('../middleware');
 
@@ -17,6 +16,14 @@ const mutation = {
       await createDocument.validate();
       await createDocument.save();
 
+      if (input.details) {
+        const detailsDoc = input.details.map((item) => ({
+          ...item,
+          documentId: createDocument.id,
+        }));
+        DocumentDet.insertMany(detailsDoc, (error, doc) => {});
+      }
+      console.log(`new ${createDocument._id}`);
       return createDocument;
     } catch (error) {
       if (error.code == 11000) throw new Error(`Duplicidad en datos, registrado con anterioridad.`);

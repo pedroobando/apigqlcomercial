@@ -33,6 +33,7 @@ const typeDefs = gql`
 
   "Datos para ingreso de la Propietario"
   type DocumentDetail {
+    id: ID!
     productId: ID!
     amount: Float
     productName: String
@@ -55,6 +56,7 @@ const typeDefs = gql`
     getDocumentsOut(finished: Boolean): [Document]
     "Obtener todo los documentos paginados"
     getProductsPaginate(page: Int, limit: Int, sortName: String): ProductPaginate
+    getProductQuantity(productId: ID!): Int
   }
 
   type Mutation {

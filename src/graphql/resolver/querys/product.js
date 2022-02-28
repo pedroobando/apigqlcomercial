@@ -1,4 +1,5 @@
 const { Product } = require('../../../mongodb/models/product');
+const { Document } = require('../../../mongodb/models/document');
 const { ApolloError } = require('apollo-server-express');
 const { isUserAuthenticate, retDataPaginate } = require('../middleware');
 
@@ -26,6 +27,23 @@ const querys = {
     } catch (error) {
       throw new ApolloError('Error en obtener datos de los Productos');
     }
+  },
+
+  getProductQuantity: async (_, { productId }, ctx) => {
+    const { uid } = await isUserAuthenticate(ctx);
+    const product = await Product.findById(productId);
+    if (!product) throw new ApolloError(`El producto no existe`, '404');
+    const documentos = await Document.find({});
+    const pepe = documentos[0].details.id('621bdecd5edbeefe31553159');
+    console.log(pepe);
+    // let details=[]
+    // let details = documentos.map((doc) => doc.details);
+    // let pepe1 = details.map((item) => ({ productId: item.productId }));
+    // console.log(pepe1);
+    // const { details } = documentos[0];
+    // console.log(documentos[0].details);
+
+    return 3;
   },
 
   getProductsActive: async (_, { sortName = 'productName' }, ctx) => {
