@@ -18,8 +18,8 @@ const verifyToken = (token) =>
     );
   });
 
-const createToken = (uid, displayName, email) => {
-  const payload = { uid, displayName, email };
+const createToken = (uid, displayName) => {
+  const payload = { uid, displayName };
   return new Promise((resolve, reject) =>
     JWT.sign(
       payload,
@@ -30,7 +30,6 @@ const createToken = (uid, displayName, email) => {
       },
       (err, token) => {
         if (err) {
-          // console.log(err);
           reject('Error generando token');
         }
         resolve(token);

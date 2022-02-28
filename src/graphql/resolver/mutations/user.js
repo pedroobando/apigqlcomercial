@@ -1,20 +1,20 @@
 const { AuthenticationError } = require('apollo-server-express');
 const User = require('../../../mongodb/models/user');
 const { createToken, cifrate, cifrateVerify } = require('../../../utils');
-const { isUserAuthenticate } = require('../middleware');
+const { isUserAuthenticate, isUserAdministrator } = require('../middleware');
 
 const mutationUser = {
   newUser: async (_, { input }) => {
-    const { email, password } = input;
+    const { nickName, password } = input;
 
-    const elEmail = email.toString().toLowerCase();
-    const usuarioExiste = await User.findOne({ email: elEmail });
+    const elnickname = nickName.toString().toLowerCase();
+    const usuarioExiste = await User.findOne({ nickName: elnickname });
     if (usuarioExiste) {
-      throw new Error(`El email ${elEmail} ya esta registrado.`);
+      throw new Error(`El apodo ${elnickname} ya esta registrado.`);
     }
 
     try {
-      input.email = email.toString().toLowerCase();
+      input.nickName = nickName.toString().toLowerCase();
       input.password = await cifrate(password);
       const newUser = new User(input);
       await newUser.validate();
@@ -27,14 +27,7 @@ const mutationUser = {
 
   updUser: async (_, { id, input }, ctx) => {
     const { uid } = await isUserAuthenticate(ctx);
-
-    const userAdmin = await User.findById(uid);
-    if (userAdmin.roll !== 'ADMIN')
-      return {
-        id: id,
-        message: `El usuario ${userAdmin.displayName} no tiene privilegios de administrador.`,
-        success: false,
-      };
+    await isUserAdministrator(uid);
 
     let user = await User.findById(id);
     if (!user) throw new Error('Usuario no encontrado');
@@ -49,16 +42,31 @@ const mutationUser = {
     }
   },
 
+  updActive: async (_, { id, active }, ctx) => {
+    const { uid } = await isUserAuthenticate(ctx);
+    await isUserAdministrator(uid);
+
+    let user = await User.findById(id);
+    if (!user) throw new Error('Usuario no encontrado');
+
+    try {
+      // input.active = active;
+      // input.updated_at = Date.now();
+      const updateUser = await User.findByIdAndUpdate(
+        id,
+        { active, updated_at: Date.now() },
+        { new: true }
+      );
+      await updateUser.validate();
+      return updateUser;
+    } catch (error) {
+      throw new Error(`${error} Problemas actualizando estatus del usuario.`);
+    }
+  },
+
   delUser: async (_, { id }, ctx) => {
     const { uid } = await isUserAuthenticate(ctx);
-
-    const userAdmin = await User.findById(uid);
-    if (userAdmin.roll !== 'ADMIN')
-      return {
-        id: id,
-        message: `El usuario ${userAdmin.displayName} no tiene privilegios de administrador.`,
-        success: false,
-      };
+    await isUserAdministrator(uid);
 
     const user = await User.findById(id);
     if (!user)
@@ -74,7 +82,7 @@ const mutationUser = {
     return { id: id, message: `Usuario ${displayName} eliminado.`, success: true };
   },
 
-  UserPassword: async (_, { input }, ctx) => {
+  passwUser: async (_, { input }, ctx) => {
     const { uid } = await isUserAuthenticate(ctx);
     const { oldpassword, newpassword } = input;
 
@@ -95,16 +103,22 @@ const mutationUser = {
   },
 
   authenticateToken: async (_, { input }) => {
-    const { email, password } = input;
+    const { nickName, password } = input;
     // Si el usuario existe
-    const existsUser = await User.findOne({ email });
-    if (!existsUser) throw new Error(`Usuario no registrado..!`);
+    const existsUser = await User.findOne({ nickName });
+    if (!existsUser) throw new Error(`Problema en usuario y password!`);
+    if (!existsUser.active) throw new Error(`Usuario bloqueado`);
     // Revisar si el password es correcto
     const passwordCorrecto = await cifrateVerify(password, existsUser.password);
-    if (!passwordCorrecto) throw new Error('Password incorrecto');
+    if (!passwordCorrecto) {
+      addNewFailedTry(existsUser, existsUser.failed + 1);
+      throw new Error('Problema en usuario y password.');
+    } else {
+      addNewFailedTry(existsUser, 0);
+    }
     // Crear el token
     return {
-      token: createToken(existsUser.id, existsUser.displayName, existsUser.email),
+      token: createToken(existsUser.id, existsUser.displayName),
     };
   },
 
@@ -112,10 +126,24 @@ const mutationUser = {
     const { auth } = ctx;
     let token = undefined;
     if (auth.isAuthenticated) {
-      token = createToken(auth.uid, auth.displayName, auth.email);
+      token = createToken(auth.uid, auth.displayName);
     }
     return { token };
   },
+};
+
+const addNewFailedTry = async (tuser, nofailed) => {
+  try {
+    const keyId = tuser.id;
+    userEntity = {
+      updated_at: Date.now(),
+      failed: nofailed,
+      active: nofailed >= 5 ? false : true,
+    };
+
+    const updateUser = await User.findByIdAndUpdate(keyId, { ...userEntity }, { new: true });
+    await updateUser.validate();
+  } catch (error) {}
 };
 
 module.exports = mutationUser;

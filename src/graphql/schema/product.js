@@ -17,6 +17,7 @@ const typeDefs = gql`
     productName: String!
     cost: Float!
     price: Float!
+    user_at: ID!
     created_at: Date!
     updated_at: Date!
   }

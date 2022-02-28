@@ -48,23 +48,30 @@ const DocumentSchema = new Schema({
   peopleName: {
     type: Schema.Types.String,
     trim: true,
-    required: true,
   },
   // Entrada / Salida / Compra / Venta / Devolucion
   docType: {
     type: Schema.Types.String,
-    trim: true,
+    uppercase: true,
     required: true,
+    trim: true,
+  },
+  subDocType: {
+    type: Schema.Types.String,
+    uppercase: true,
+    trim: true,
+    default: '',
   },
   // draft || finished || shipped and loaded
   finished: {
     type: Schema.Types.Boolean,
     default: false,
   },
-  // details: [DocDetailSchema],
-  // details: {
-  //   type: Schema.Types.Subdocument,
-  // },
+  user_at: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
+  },
   created_at: {
     type: Date,
     default: Date.now(),
@@ -77,7 +84,7 @@ const DocumentSchema = new Schema({
 
 // Agregando sistema de paginacion
 DocumentSchema.plugin(mongoosePaginate);
-DocumentSchema.index({ docType: 1, docDate: 1, finished: 1 }, { unique: false });
+DocumentSchema.index({ docType: 1, finished: 1 }, { unique: false });
 DocumentSchema.index({ docType: 1, docNumber: 1 }, { unique: false });
 const Document = model('Document', DocumentSchema);
 

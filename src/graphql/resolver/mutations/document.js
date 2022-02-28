@@ -1,5 +1,6 @@
 const { ApolloError } = require('apollo-server-express');
 const { Document, DocumentDet } = require('../../../mongodb/models/document');
+const { Product } = require('../../../mongodb/models/product');
 
 const { isUserAuthenticate } = require('../middleware');
 
@@ -11,19 +12,15 @@ const mutation = {
     try {
       input.created_at = Date.now();
       input.updated_at = Date.now();
+      input.user_at = uid;
 
       const createDocument = new Document(input);
       await createDocument.validate();
       await createDocument.save();
 
       if (input.details) {
-        const detailsDoc = input.details.map((item) => ({
-          ...item,
-          documentId: createDocument.id,
-        }));
-        DocumentDet.insertMany(detailsDoc, (error, doc) => {});
+        documentLink(createDocument.id, input.details);
       }
-      console.log(`new ${createDocument._id}`);
       return createDocument;
     } catch (error) {
       if (error.code == 11000) throw new Error(`Duplicidad en datos, registrado con anterioridad.`);
@@ -35,6 +32,7 @@ const mutation = {
     const { uid } = await isUserAuthenticate(ctx);
 
     try {
+      input.user_at = uid;
       input.updated_at = Date.now();
       const updateDocument = await Document.findByIdAndUpdate(documentId, input, { new: true });
       await updateDocument.validate();
@@ -59,5 +57,17 @@ const mutation = {
     }
   },
 };
+
+const documentLink = (documentId, details) => {
+  try {
+    const detailsDoc = details.map((item) => ({
+      ...item,
+      documentId: documentId,
+    }));
+    DocumentDet.insertMany(detailsDoc, (error, doc) => {});
+  } catch (error) {}
+};
+
+// const productfind = async (productId) => await Product.findById(productId);
 
 module.exports = mutation;

@@ -5,23 +5,22 @@ const typeDefs = gql`
   "Datos para usuario nuevo"
   input UserInput {
     displayName: String!
-    email: String!
+    nickName: String!
     password: String!
     phone: String
-    roll: EnumUserRoll!
+    roll: EnumUserRoll
   }
 
   input UserEditInput {
     displayName: String!
-    email: String!
+    nickName: String!
     phone: String
-    roll: EnumUserRoll!
-    active: Boolean
+    roll: EnumUserRoll
   }
 
   "Datos para Autenticacion de usuario"
   input AuthenticateInput {
-    email: String!
+    nickName: String!
     password: String!
   }
 
@@ -39,18 +38,19 @@ const typeDefs = gql`
   "Informacion Usuario de la aplicacion"
   type User {
     id: ID!
-    displayName: String!
-    email: String!
+    displayName: String
+    nickName: String
     phone: String
     active: Boolean
     roll: String
+    failed: Int
     created_at: Date!
     updated_at: Date!
   }
 
   type Query {
     "Obtener solo un usuario"
-    getUser(id: String): User
+    getUser(id: ID!): User
     "Muestra todos los usuarios de la App"
     getUsers: [User]
     "Muestra todos los usuarios activos"
@@ -60,19 +60,22 @@ const typeDefs = gql`
   type Mutation {
     "Creacion de nuevo usuario"
     newUser(input: UserInput!): User
+    "Actualizacion de datos del usuario"
+    updUser(id: ID!, input: UserEditInput!): User
+    "Actualizacion de datos del usuario"
+    updActive(id: ID!, active: Boolean!): User
+    "Dar de baja al usuario"
+    delUser(id: ID!): ReturnMessage
+
     "Autenticacion del usuario, retornando el token"
     authenticateToken(input: AuthenticateInput!): Token
     "Revalidar o regeneral un nuevo token para el usuario"
     revalidateToken: Token
+    "Cambio de password o contraseña"
+    passwUser(input: UserPasswordInput!): ReturnMessage
 
     # "Autenticacion de usuario, retornado el usuario"
     # authenticateRetUser(input: AuthenticateInput!): User
-    "Actualizacion de datos del usuario"
-    updUser(id: String!, input: UserEditInput!): User
-    "Dar de baja al usuario"
-    delUser(id: String): ReturnMessage
-    "Cambio de password o contraseña"
-    UserPassword(input: UserPasswordInput!): ReturnMessage
   }
 `;
 

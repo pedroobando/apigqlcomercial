@@ -40,7 +40,6 @@ const startApolloServer = async (typeDefs, resolvers) => {
           isAuthenticated,
           uid: payload.uid,
           displayName: payload.displayName,
-          email: payload.email,
         },
       };
     },
@@ -53,8 +52,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
   server.applyMiddleware({ app, path: '/' });
 
   const port = process.env.PORT || 4000;
-  // await new Promise((resolve) => app.listen({ port }, resolve));
-  await app.listen({ port }, () =>
+  app.listen({ port }, () =>
     console.log(`🚀 Server ready at http://localhost:${port}${server.graphqlPath}`)
   );
 

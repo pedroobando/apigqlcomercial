@@ -1,16 +1,18 @@
 const { ApolloError } = require('apollo-server-express');
 const { Product } = require('../../../mongodb/models/product');
-const { isUserAuthenticate } = require('../middleware');
+const { isUserAuthenticate, isUserAdministrator } = require('../middleware');
 
 const idempty = '0'.repeat(24);
 
 const mutation = {
   newProduct: async (_, { input }, ctx) => {
     const { uid } = await isUserAuthenticate(ctx);
+    await isUserAdministrator(uid);
 
     try {
       input.created_at = Date.now();
       input.updated_at = Date.now();
+      input.user_at = uid;
       const createProduct = new Product(input);
       await createProduct.validate();
       await createProduct.save();
@@ -24,8 +26,10 @@ const mutation = {
 
   updProduct: async (_, { productId, input }, ctx) => {
     const { uid } = await isUserAuthenticate(ctx);
+    await isUserAdministrator(uid);
 
     try {
+      input.user_at = uid;
       input.updated_at = Date.now();
       const updateProduct = await Product.findByIdAndUpdate(productId, input, { new: true });
       await updateProduct.validate();
@@ -39,6 +43,8 @@ const mutation = {
 
   delProduct: async (_, { productId }, ctx) => {
     const { uid } = await isUserAuthenticate(ctx);
+    await isUserAdministrator(uid);
+
     const findProduct = await Product.findById(productId);
     if (!findProduct) throw new ApolloError('Producto no encontrado!');
 

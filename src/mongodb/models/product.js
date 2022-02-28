@@ -11,7 +11,6 @@ const ProductSchema = new Schema({
     type: Schema.Types.String,
     required: true,
     trim: true,
-    // ref: 'PropertyType',
   },
   cost: {
     type: Schema.Types.Number,
@@ -28,6 +27,11 @@ const ProductSchema = new Schema({
   created_at: {
     type: Date,
     default: Date.now(),
+  },
+  user_at: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
   updated_at: {
     type: Date,

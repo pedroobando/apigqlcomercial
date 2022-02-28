@@ -1,30 +1,41 @@
 const { Schema, model } = require('mongoose');
 
-const { dataTypeStringDefault } = require('./xdataTypeModel');
-
 const UserSchema = Schema({
-  email: {
-    ...dataTypeStringDefault,
+  nickName: {
+    type: Schema.Types.String,
     unique: true,
+    required: true,
+    trim: true,
   },
   roll: {
-    ...dataTypeStringDefault,
+    type: Schema.Types.String,
     required: true,
+    trim: true,
+    default: 'CASHIER',
   },
   password: {
-    ...dataTypeStringDefault,
+    type: Schema.Types.String,
+    required: true,
+    trim: true,
   },
   displayName: {
-    ...dataTypeStringDefault,
+    type: Schema.Types.String,
+    required: false,
+    trim: true,
   },
   phone: {
-    ...dataTypeStringDefault,
+    type: Schema.Types.String,
     required: false,
+    trim: true,
   },
   active: {
     type: Schema.Types.Boolean,
-    default: true,
     required: true,
+    default: true,
+  },
+  failed: {
+    type: Schema.Types.Number,
+    default: 0,
   },
   created_at: {
     type: Date,
@@ -36,5 +47,5 @@ const UserSchema = Schema({
   },
 });
 
-UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ nickName: 1 }, { unique: true });
 module.exports = model('User', UserSchema);

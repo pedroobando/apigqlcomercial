@@ -6,8 +6,9 @@ const typeDefs = gql`
   input DocumentInput {
     docDate: Date!
     docNumber: Int
-    peopleName: String!
+    peopleName: String
     docType: String!
+    subDocType: String
     finished: Boolean
     details: [DocumentDetailInput]
   }
@@ -23,10 +24,12 @@ const typeDefs = gql`
     id: ID!
     docDate: Date!
     docNumber: Int
-    peopleName: String!
+    peopleName: String
     docType: String!
+    subDocType: String
     finished: Boolean
     details: [DocumentDetail]
+    user_at: String
     created_at: Date!
     updated_at: Date!
   }

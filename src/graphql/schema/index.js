@@ -15,7 +15,7 @@ const typeDefs = gql`
 
   enum EnumUserRoll {
     ADMIN
-    CAJERO
+    CASHIER
   }
 
   "Calculo para el tipo de Gasto"
