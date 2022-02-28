@@ -2,39 +2,39 @@ version: '3'
 
 services:
   api:
-    container_name: gqlusers
+    container_name: gqlirapa
     restart: always
     build: .
     ports:
       - '5410:5410'
     environment:
       - PORT=5410
-      - MONGODB_URI=mongodb://172.26.238.1:27020/usersdb
+      - MONGODB_URI=mongodb://172.26.237.1:27021/irapacommerce
     volumes:
       - .:/app
     depends_on:
       - mongo_db
     networks:
-      - inbackend
+      - ecbackend
 
   mongo_db:
-    container_name: dbusers
+    container_name: dbirapa
     image: mongo:4.4-focal # nombre de la imagen
     restart: always
     ports:
-      - '27020:27017'
+      - '27021:27017'
     logging:
       driver: none
     volumes:
       - ./mongo_data:/data/db
     networks:
-      - inbackend
+      - ecbackend
 
 networks:
-  inbackend:
+  ecbackend:
     driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: 172.26.238.0/24
-          gateway: 172.26.238.1
+        - subnet: 172.26.237.0/24
+          gateway: 172.26.237.1
