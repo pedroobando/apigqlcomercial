@@ -2,14 +2,15 @@ version: '3'
 
 services:
   api:
-    container_name: gqlirapa
+    image: apigqlirapa
+    container_name: apigqlirapa_ct
     restart: always
     build: .
     ports:
       - '5410:5410'
     environment:
       - PORT=5410
-      - MONGODB_URI=mongodb://172.26.237.1:27021/irapacommerce
+      - MONGODB_URI=mongodb://172.62.237.1:27020/irapacommerce
     volumes:
       - .:/app
     depends_on:
@@ -18,15 +19,15 @@ services:
       - ecbackend
 
   mongo_db:
-    container_name: dbirapa
-    image: mongo:5.0.6 # nombre de la imagen
+    image: mongo:5.0.6-focal # nombre de la imagen
+    container_name: mongodata_ct
     restart: always
     ports:
-      - '27021:27017'
+      - '27020:27017'
     logging:
       driver: none
     volumes:
-      - ./mongo_data:/data/db
+      - /home/pedro/node/mongodb:/data/db
     networks:
       - ecbackend
 
